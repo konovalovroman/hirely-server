@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  website     String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  users     User[]
+  rates     Rate[]
+  vacancies Vacancy[]
+
+  @@map(name: "companies")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String
+  password   String
+  role       String
+  company_id Int?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  company   Company?   @relation(fields: [company_id], references: [id])
+  rates     Rate[]
+  vacancies Vacancy[]
+  feedbacks Feedback[]
+  cv        Cv?
+
+  @@map(name: "users")
+}
+
+model Rate {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  company_id Int
+  rate       Int
+  message    String
+  created_at DateTime @default(now())
+
+  user    User    @relation(fields: [user_id], references: [id])
+  company Company @relation(fields: [company_id], references: [id])
+
+  @@map(name: "rates")
+}
+
+model Cv {
+  id         Int      @id @default(autoincrement())
+  file_path  String
+  user_id    Int      @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map(name: "cvs")
+}
+
+model Category {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+
+  vacancies Vacancy[]
+
+  @@map(name: "categories")
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  city String
+
+  vacancies Vacancy[]
+
+  @@map(name: "locations")
+}
+
+model Vacancy {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  salary      Int
+  experience  Int
+  category_id Int
+  location_id Int
+  company_id  Int
+  author_id   Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  category  Category           @relation(fields: [category_id], references: [id])
+  location  Location           @relation(fields: [location_id], references: [id])
+  company   Company            @relation(fields: [company_id], references: [id])
+  author    User               @relation(fields: [author_id], references: [id])
+  feedbacks Feedback[]
+  tags      TagsAndVacancies[]
+
+  @@map(name: "vacancies")
+}
+
+model Feedback {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  vacancy_id Int
+  message    String
+  created_at DateTime @default(now())
+
+  user    User    @relation(fields: [user_id], references: [id])
+  vacancy Vacancy @relation(fields: [vacancy_id], references: [id])
+
+  @@map(name: "feedbacks")
+}
+
+model Tag {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+
+  vacancies TagsAndVacancies[]
+
+  @@map(name: "tags")
+}
+
+model TagsAndVacancies {
+  id         Int      @id @default(autoincrement())
+  tag_id     Int
+  vacancy_id Int
+  created_at DateTime @default(now())
+
+  tag     Tag     @relation(fields: [tag_id], references: [id])
+  vacancy Vacancy @relation(fields: [vacancy_id], references: [id])
+
+  @@map(name: "tags_and_vacancies")
+}
