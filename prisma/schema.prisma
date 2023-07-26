@@ -26,15 +26,16 @@ model Company {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  first_name String   @db.VarChar(30)
-  last_name  String   @db.VarChar(30)
-  email      String   @unique @db.VarChar(255)
-  password   String   @db.VarChar(255)
-  role       UserRole
-  company_id Int?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id                 Int      @id @default(autoincrement())
+  first_name         String   @db.VarChar(30)
+  last_name          String   @db.VarChar(30)
+  email              String   @unique @db.VarChar(255)
+  password           String   @db.VarChar(255)
+  role               UserRole
+  rt_hash            String?   @db.VarChar(255)
+  company_id         Int?
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
 
   company   Company?   @relation(fields: [company_id], references: [id])
   rates     Rate[]

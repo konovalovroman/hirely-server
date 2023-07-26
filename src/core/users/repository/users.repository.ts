@@ -31,9 +31,11 @@ export class UsersRepository {
         return users;
     }
 
-    async findOneUser(params: { id: number }): Promise<User | null> {
-        const { id } = params;
-        const user = await this.prisma.user.findUnique({ where: { id } });
+    async findOneUser(params: {
+        where: Prisma.UserWhereUniqueInput;
+    }): Promise<User | null> {
+        const { where } = params;
+        const user = await this.prisma.user.findUnique({ where });
         return user;
     }
 

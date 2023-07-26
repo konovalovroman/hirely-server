@@ -51,12 +51,20 @@ export class UsersService {
     }
 
     async findOne(id: number) {
-        const user = await this.usersRepository.findOneUser({ id });
+        const user = await this.usersRepository.findOneUser({ where: { id } });
+        return user;
+    }
+
+    async findOneByEmail(email: string) {
+        const user = await this.usersRepository.findOneUser({
+            where: { email },
+        });
         return user;
     }
 
     async update(id: number, updateUserDto: UpdateUserDto) {
-        const { first_name, last_name, password, role } = updateUserDto;
+        const { first_name, last_name, password, role, rt_hash } =
+            updateUserDto;
         const user = await this.usersRepository.updateUser({
             where: {
                 id,
@@ -66,6 +74,7 @@ export class UsersService {
                 last_name,
                 password,
                 role,
+                rt_hash,
             },
         });
         return user;
