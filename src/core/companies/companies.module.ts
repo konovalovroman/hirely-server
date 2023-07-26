@@ -6,16 +6,8 @@ import { DatabaseModule } from 'src/database/database.module';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Module({
-  imports: [
-    DatabaseModule,
-  ],
-  controllers: [CompaniesController],
-  providers: [
-    CompaniesService,
-    {
-      provide: 'CompaniesRepository',
-      useClass: CompaniesRepository
-    },
-  ]
+    imports: [DatabaseModule],
+    controllers: [CompaniesController],
+    providers: [CompaniesService, CompaniesRepository],
 })
 export class CompaniesModule {}

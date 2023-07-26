@@ -1,61 +1,59 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { Company, Prisma } from "@prisma/client";
-import { PrismaService } from "src/database/prisma.service";
-
+import { Injectable } from '@nestjs/common';
+import { Company, Prisma } from '@prisma/client';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class CompaniesRepository {
-    constructor(
-        private readonly prisma: PrismaService
-    ) {}
+    constructor(private readonly prisma: PrismaService) {}
 
-    async find(params?: {
+    async createCompany(params: {
+        data: Prisma.CompanyCreateInput;
+    }): Promise<Company | null> {
+        const { data } = params;
+        return this.prisma.company.create({ data });
+    }
+
+    async findCompanies(params?: {
         skip?: number;
         take?: number;
         cursor?: Prisma.CompanyWhereUniqueInput;
         where?: Prisma.CompanyWhereInput;
         orderBy?: Prisma.CompanyOrderByWithRelationInput;
     }): Promise<Company[]> {
-       try {
-        const {skip, take, cursor, where, orderBy } = { ...params };
-        const companies = await this.prisma.company.findMany({ skip, take, cursor, where, orderBy });
-        console.log(companies);
+        const { skip, take, cursor, where, orderBy } = { ...params };
+        const companies = await this.prisma.company.findMany({
+            skip,
+            take,
+            cursor,
+            where,
+            orderBy,
+        });
         return companies;
-       } catch (err) {
-        return null;
-       }
     }
 
-    async findOne(params: { id: number }): Promise<Company> {
-      try {
+    async findOneCompany(params: { id: number }): Promise<Company | null> {
         const { id } = params;
         const company = await this.prisma.company.findUnique({ where: { id } });
-        console.log('company: ', company);
         return company;
-      } catch (err) {
-        return null;
-      }
     }
 
-    async create(params: {data: Prisma.CompanyCreateInput}): Promise<Company> {
-        const { data } = params;
-        return this.prisma.company.create({ data });
-    }
-
-    async update(params: {
+    async updateCompany(params: {
         where: Prisma.CompanyWhereUniqueInput;
         data: Prisma.CompanyUpdateInput;
-      }): Promise<Company> {
+    }): Promise<Company | null> {
         const { where, data } = params;
-        return this.prisma.company.update({ where, data });
-      }
-    
-      async delete(params: {
-        where: Prisma.CompanyWhereUniqueInput;
-      }): Promise<Company> {
-        const { where } = params;
-        return this.prisma.company.delete({ where });
-      }
+        const updatedCompany = await this.prisma.company.update({
+            where,
+            data,
+        });
+        return updatedCompany;
+    }
 
-    
+    async deleteCompany(params: {
+        where: Prisma.CompanyWhereUniqueInput;
+    }): Promise<Company | null> {
+        const { where } = params;
+        const deletedCompany = await this.prisma.company.delete({ where });
+        return deletedCompany;
+    }
 }

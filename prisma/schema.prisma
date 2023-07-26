@@ -12,9 +12,9 @@ datasource db {
 
 model Company {
   id          Int      @id @default(autoincrement())
-  name        String   @unique
+  name        String   @unique @db.VarChar(30)
   description String
-  website     String?
+  website     String?  @db.VarChar(255)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
@@ -27,10 +27,10 @@ model Company {
 
 model User {
   id         Int      @id @default(autoincrement())
-  first_name String
-  last_name  String
-  email      String  @unique
-  password   String
+  first_name String   @db.VarChar(30)
+  last_name  String   @db.VarChar(30)
+  email      String   @unique @db.VarChar(255)
+  password   String   @db.VarChar(255)
   role       UserRole
   company_id Int?
   created_at DateTime @default(now())
@@ -49,7 +49,7 @@ model Rate {
   id         Int      @id @default(autoincrement())
   user_id    Int
   company_id Int
-  rate       Int
+  rate       Int      @db.SmallInt
   message    String
   created_at DateTime @default(now())
 
@@ -61,7 +61,7 @@ model Rate {
 
 model Cv {
   id         Int      @id @default(autoincrement())
-  file_path  String
+  file_path  String   @db.VarChar(255)
   user_id    Int      @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -73,7 +73,7 @@ model Cv {
 
 model Category {
   id         Int      @id @default(autoincrement())
-  name       String   @unique
+  name       String   @unique @db.VarChar(40)
   created_at DateTime @default(now())
 
   vacancies Vacancy[]
@@ -83,7 +83,7 @@ model Category {
 
 model Location {
   id   Int    @id @default(autoincrement())
-  city String @unique
+  city String @unique @db.VarChar(30)
 
   vacancies Vacancy[]
 
@@ -92,10 +92,10 @@ model Location {
 
 model Vacancy {
   id          Int      @id @default(autoincrement())
-  name        String
+  name        String   @db.VarChar(100)
   description String
   salary      Int
-  experience  Int
+  experience  Int      @db.SmallInt
   category_id Int
   location_id Int
   company_id  Int
@@ -128,7 +128,7 @@ model Feedback {
 
 model Tag {
   id         Int      @id @default(autoincrement())
-  name       String   @unique
+  name       String   @unique @db.VarChar(30)
   created_at DateTime @default(now())
 
   vacancies TagsAndVacancies[]

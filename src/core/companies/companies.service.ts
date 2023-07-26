@@ -6,54 +6,52 @@ import { Company } from '@prisma/client';
 
 @Injectable()
 export class CompaniesService {
-  constructor(
-    @Inject('CompaniesRepository') private readonly companiesRepository: CompaniesRepository
-  ) {}
+    constructor(private readonly companiesRepository: CompaniesRepository) {}
 
-  async create(createCompanyDto: CreateCompanyDto) {
-    const { name, description, website } = createCompanyDto;
-    const existingCompanies = await this.companiesRepository.find({
-      where: { 
-        name,
-       }
-    });
-    if (existingCompanies.length) {
-      return null;
+    async create(createCompanyDto: CreateCompanyDto) {
+        const { name, description, website } = createCompanyDto;
+        const existingCompanies = await this.companiesRepository.findCompanies({
+            where: {
+                name,
+            },
+        });
+        if (existingCompanies.length) {
+            return null;
+        }
+
+        const company = await this.companiesRepository.createCompany({
+            data: { name, description, website },
+        });
+
+        return company;
     }
 
-    const company = await this.companiesRepository.create({
-      data: { name, description, website },
-    });
+    async findAll() {
+        const companies = await this.companiesRepository.findCompanies();
+        return companies;
+    }
 
-    return company;
-  }
+    async findOne(id: number) {
+        const company = await this.companiesRepository.findOneCompany({ id });
+        return company;
+    }
 
-  async findAll() {
-    const companies = await this.companiesRepository.find();
-    return companies;
-  }
+    async update(id: number, updateCompanyDto: UpdateCompanyDto) {
+        const company = await this.companiesRepository.updateCompany({
+            where: {
+                id,
+            },
+            data: updateCompanyDto,
+        });
+        return company;
+    }
 
-  async findOne(id: number) {
-    const company = await this.companiesRepository.findOne({ id });
-    return company;
-  }
-
-  async update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    const company = await this.companiesRepository.update({
-      where: { 
-        id 
-      }, 
-      data: updateCompanyDto 
-    });
-    return company;
-  }
-
-  async remove(id: number) {
-    const company = await this.companiesRepository.delete({
-      where: {
-        id,
-      },
-    });
-    return company;
-  }
+    async remove(id: number) {
+        const company = await this.companiesRepository.deleteCompany({
+            where: {
+                id,
+            },
+        });
+        return company;
+    }
 }
