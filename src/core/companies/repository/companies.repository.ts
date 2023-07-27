@@ -41,19 +41,27 @@ export class CompaniesRepository {
         where: Prisma.CompanyWhereUniqueInput;
         data: Prisma.CompanyUpdateInput;
     }): Promise<Company | null> {
-        const { where, data } = params;
-        const updatedCompany = await this.prisma.company.update({
+        try {
+            const { where, data } = params;
+            const updatedCompany = await this.prisma.company.update({
             where,
             data,
-        });
-        return updatedCompany;
+            });
+            return updatedCompany;
+        } catch (err) {
+            return null;
+        }
     }
 
     async deleteCompany(params: {
         where: Prisma.CompanyWhereUniqueInput;
     }): Promise<Company | null> {
-        const { where } = params;
-        const deletedCompany = await this.prisma.company.delete({ where });
-        return deletedCompany;
+        try {
+            const { where } = params;
+            const deletedCompany = await this.prisma.company.delete({ where });
+            return deletedCompany;
+        } catch (err) {
+            return null;
+        }
     }
 }
