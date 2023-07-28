@@ -8,9 +8,11 @@ export class UsersRepository {
 
     async createUser(params: {
         data: Prisma.UserCreateInput;
+        include?: Prisma.UserInclude;
     }): Promise<User | null> {
-        const { data } = params;
-        return this.prisma.user.create({ data });
+        const { data, include } = params;
+        const user = await this.prisma.user.create({ data, include });
+        return user;
     }
 
     async findUsers(params?: {
@@ -19,33 +21,37 @@ export class UsersRepository {
         cursor?: Prisma.UserWhereUniqueInput;
         where?: Prisma.UserWhereInput;
         orderBy?: Prisma.UserOrderByWithRelationInput;
+        include?: Prisma.UserInclude;
     }): Promise<User[]> {
-        const { skip, take, cursor, where, orderBy } = { ...params };
+        const { skip, take, cursor, where, orderBy, include } = { ...params };
         const users = await this.prisma.user.findMany({
             skip,
             take,
             cursor,
             where,
             orderBy,
+            include,
         });
         return users;
     }
 
     async findOneUser(params: {
         where: Prisma.UserWhereUniqueInput;
+        include?: Prisma.UserInclude;
     }): Promise<User | null> {
-        const { where } = params;
-        const user = await this.prisma.user.findUnique({ where });
+        const { where, include } = params;
+        const user = await this.prisma.user.findUnique({ where, include });
         return user;
     }
 
     async updateUser(params: {
         where: Prisma.UserWhereUniqueInput;
         data: Prisma.UserUpdateInput;
+        include?: Prisma.UserInclude;
     }): Promise<User | null> {
         try {
-            const { where, data } = params;
-            const updatedUser = await this.prisma.user.update({ where, data });
+            const { where, data, include } = params;
+            const updatedUser = await this.prisma.user.update({ where, data, include });
             return updatedUser;
         } catch (err) {
             return null;
@@ -54,10 +60,11 @@ export class UsersRepository {
 
     async deleteUser(params: {
         where: Prisma.UserWhereUniqueInput;
+        include?: Prisma.UserInclude;
     }): Promise<User | null> {
         try {
-            const { where } = params;
-            const deletedUser = await this.prisma.user.delete({ where });
+            const { where, include } = params;
+            const deletedUser = await this.prisma.user.delete({ where, include });
             return deletedUser;
         } catch (err) {
             return null;

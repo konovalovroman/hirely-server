@@ -7,10 +7,12 @@ export class TagsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
     async createTag(params: {
-        data: Prisma.TagCreateInput
+        data: Prisma.TagCreateInput;
+        include?: Prisma.TagInclude;
     }): Promise<Tag | null> {
-        const { data } = params;
-        return this.prisma.tag.create({ data });
+        const { data, include } = params;
+        const tag = await this.prisma.tag.create({ data, include });
+        return tag;
     }
 
     async findTags(params?: {
@@ -19,28 +21,36 @@ export class TagsRepository {
         cursor?: Prisma.TagWhereUniqueInput;
         where?: Prisma.TagWhereInput;
         orderBy?: Prisma.TagOrderByWithRelationInput;
+        include?: Prisma.TagInclude;
     }): Promise<Tag[]> {
-        const { skip, take, cursor, where, orderBy } = { ...params };
+        const { skip, take, cursor, where, orderBy, include } = { ...params };
         const tags = await this.prisma.tag.findMany({
             skip,
             take,
             cursor,
             where,
             orderBy,
+            include,
         });
         return tags;
     }
 
-    async findOneTag(params: { where: Prisma.TagWhereUniqueInput }): Promise<Tag | null> {
-        const { where } = params;
-        const tag = await this.prisma.tag.findUnique({ where });
+    async findOneTag(params: { 
+        where: Prisma.TagWhereUniqueInput;
+        include?: Prisma.TagInclude;
+    }): Promise<Tag | null> {
+        const { where, include } = params;
+        const tag = await this.prisma.tag.findUnique({ where, include });
         return tag;
     }
 
-    async deleteTag(params: { where: Prisma.TagWhereUniqueInput }): Promise<Tag | null> {
+    async deleteTag(params: { 
+        where: Prisma.TagWhereUniqueInput;
+        include?: Prisma.TagInclude;
+    }): Promise<Tag | null> {
         try {
-            const { where } = params;
-            const deletedTag = await this.prisma.tag.delete({ where });
+            const { where, include } = params;
+            const deletedTag = await this.prisma.tag.delete({ where, include });
             return deletedTag;
         } catch(err) {
             return null;

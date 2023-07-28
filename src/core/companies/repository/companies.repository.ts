@@ -8,9 +8,11 @@ export class CompaniesRepository {
 
     async createCompany(params: {
         data: Prisma.CompanyCreateInput;
+        include?: Prisma.CompanyInclude;
     }): Promise<Company | null> {
-        const { data } = params;
-        return this.prisma.company.create({ data });
+        const { data, include } = params;
+        const company = await this.prisma.company.create({ data, include });
+        return company;
     }
 
     async findCompanies(params?: {
@@ -19,33 +21,40 @@ export class CompaniesRepository {
         cursor?: Prisma.CompanyWhereUniqueInput;
         where?: Prisma.CompanyWhereInput;
         orderBy?: Prisma.CompanyOrderByWithRelationInput;
+        include?: Prisma.CompanyInclude;
     }): Promise<Company[]> {
-        const { skip, take, cursor, where, orderBy } = { ...params };
+        const { skip, take, cursor, where, orderBy, include } = { ...params };
         const companies = await this.prisma.company.findMany({
             skip,
             take,
             cursor,
             where,
             orderBy,
+            include,
         });
         return companies;
     }
 
-    async findOneCompany(params: { id: number }): Promise<Company | null> {
-        const { id } = params;
-        const company = await this.prisma.company.findUnique({ where: { id } });
+    async findOneCompany(params: { 
+        where:  Prisma.CompanyWhereUniqueInput;
+        include?: Prisma.CompanyInclude;
+    }): Promise<Company | null> {
+        const { where, include } = params;
+        const company = await this.prisma.company.findUnique({ where, include });
         return company;
     }
 
     async updateCompany(params: {
         where: Prisma.CompanyWhereUniqueInput;
         data: Prisma.CompanyUpdateInput;
+        include?: Prisma.CompanyInclude;
     }): Promise<Company | null> {
         try {
-            const { where, data } = params;
+            const { where, data, include } = params;
             const updatedCompany = await this.prisma.company.update({
-            where,
-            data,
+                where,
+                data,
+                include,
             });
             return updatedCompany;
         } catch (err) {
@@ -55,10 +64,11 @@ export class CompaniesRepository {
 
     async deleteCompany(params: {
         where: Prisma.CompanyWhereUniqueInput;
+        include?: Prisma.CompanyInclude;
     }): Promise<Company | null> {
         try {
-            const { where } = params;
-            const deletedCompany = await this.prisma.company.delete({ where });
+            const { where, include } = params;
+            const deletedCompany = await this.prisma.company.delete({ where, include });
             return deletedCompany;
         } catch (err) {
             return null;
