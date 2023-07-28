@@ -1,16 +1,18 @@
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class UpdateCompanyDto {
-    @IsOptional()
     @IsString()
+    @IsNotEmpty()
+    @IsOptional()
     name?: string;
 
-    @IsOptional()
     @IsString()
+    @IsNotEmpty()
+    @IsOptional()
     description?: string;
 
-    @IsOptional()
-    @IsString()
     @IsUrl()
+    @IsOptional()
+    @IsNotEmpty()
     website?: string;
 }

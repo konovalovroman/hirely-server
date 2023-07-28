@@ -35,12 +35,15 @@ export class CompaniesRepository {
         return companies;
     }
 
-    async findOneCompany(params: { 
-        where:  Prisma.CompanyWhereUniqueInput;
+    async findOneCompany(params: {
+        where: Prisma.CompanyWhereUniqueInput;
         include?: Prisma.CompanyInclude;
     }): Promise<Company | null> {
         const { where, include } = params;
-        const company = await this.prisma.company.findUnique({ where, include });
+        const company = await this.prisma.company.findUnique({
+            where,
+            include,
+        });
         return company;
     }
 
@@ -68,7 +71,10 @@ export class CompaniesRepository {
     }): Promise<Company | null> {
         try {
             const { where, include } = params;
-            const deletedCompany = await this.prisma.company.delete({ where, include });
+            const deletedCompany = await this.prisma.company.delete({
+                where,
+                include,
+            });
             return deletedCompany;
         } catch (err) {
             return null;

@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { Prisma, Tag } from "@prisma/client";
-import { PrismaService } from "src/database/prisma.service";
+import { Injectable } from '@nestjs/common';
+import { Prisma, Tag } from '@prisma/client';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class TagsRepository {
@@ -35,7 +35,7 @@ export class TagsRepository {
         return tags;
     }
 
-    async findOneTag(params: { 
+    async findOneTag(params: {
         where: Prisma.TagWhereUniqueInput;
         include?: Prisma.TagInclude;
     }): Promise<Tag | null> {
@@ -44,7 +44,7 @@ export class TagsRepository {
         return tag;
     }
 
-    async deleteTag(params: { 
+    async deleteTag(params: {
         where: Prisma.TagWhereUniqueInput;
         include?: Prisma.TagInclude;
     }): Promise<Tag | null> {
@@ -52,7 +52,7 @@ export class TagsRepository {
             const { where, include } = params;
             const deletedTag = await this.prisma.tag.delete({ where, include });
             return deletedTag;
-        } catch(err) {
+        } catch (err) {
             return null;
         }
     }

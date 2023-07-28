@@ -51,7 +51,11 @@ export class UsersRepository {
     }): Promise<User | null> {
         try {
             const { where, data, include } = params;
-            const updatedUser = await this.prisma.user.update({ where, data, include });
+            const updatedUser = await this.prisma.user.update({
+                where,
+                data,
+                include,
+            });
             return updatedUser;
         } catch (err) {
             return null;
@@ -64,7 +68,10 @@ export class UsersRepository {
     }): Promise<User | null> {
         try {
             const { where, include } = params;
-            const deletedUser = await this.prisma.user.delete({ where, include });
+            const deletedUser = await this.prisma.user.delete({
+                where,
+                include,
+            });
             return deletedUser;
         } catch (err) {
             return null;

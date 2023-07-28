@@ -36,11 +36,17 @@ export class CompaniesService {
     }
 
     async findOne(id: number): Promise<Company | null> {
-        const company = await this.companiesRepository.findOneCompany({ where: { id }, include: { users: true } });
+        const company = await this.companiesRepository.findOneCompany({
+            where: { id },
+            include: { users: true },
+        });
         return company;
     }
 
-    async update(id: number, updateCompanyDto: UpdateCompanyDto): Promise<Company | null> {
+    async update(
+        id: number,
+        updateCompanyDto: UpdateCompanyDto,
+    ): Promise<Company | null> {
         const company = await this.companiesRepository.updateCompany({
             where: {
                 id,
@@ -59,7 +65,10 @@ export class CompaniesService {
         return company;
     }
 
-    async addUserToCompany(id: number, userId: number): Promise<Company | null> {
+    async addUserToCompany(
+        id: number,
+        userId: number,
+    ): Promise<Company | null> {
         const [company, user] = await Promise.all([
             this.findOne(id),
             this.usersService.findOne(userId),
@@ -74,7 +83,10 @@ export class CompaniesService {
         });
     }
 
-    async removeUserFromCompany(id: number, userId: number): Promise<Company | null> {
+    async removeUserFromCompany(
+        id: number,
+        userId: number,
+    ): Promise<Company | null> {
         const [company, user] = await Promise.all([
             this.findOne(id),
             this.usersService.findOne(userId),
@@ -82,11 +94,11 @@ export class CompaniesService {
         if (!company || !user) {
             return null;
         }
-        const result =  await this.companiesRepository.updateCompany({
+        const result = await this.companiesRepository.updateCompany({
             where: { id },
             data: { users: { disconnect: { id: userId } } },
             include: { users: true },
         });
         return result;
-    }   
+    }
 }

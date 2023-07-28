@@ -66,8 +66,14 @@ export class CompaniesController {
     }
 
     @Post(':id/addUser/:userId')
-    async addUserToCompany(@Param('id') id: string, @Param('userId') userId: string) {
-        const company = await this.companiesService.addUserToCompany(+id, +userId);
+    async addUserToCompany(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+    ) {
+        const company = await this.companiesService.addUserToCompany(
+            +id,
+            +userId,
+        );
         if (!company) {
             throw new BadRequestException('Invalid id or userId.');
         }
@@ -75,8 +81,14 @@ export class CompaniesController {
     }
 
     @Post(':id/removeUser/:userId')
-    async removeUserFromCompany(@Param('id') id: string, @Param('userId') userId: string) {
-        const company = await this.companiesService.removeUserFromCompany(+id, +userId);
+    async removeUserFromCompany(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+    ) {
+        const company = await this.companiesService.removeUserFromCompany(
+            +id,
+            +userId,
+        );
         if (!company) {
             throw new BadRequestException('Invalid id or userId.');
         }
