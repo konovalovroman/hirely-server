@@ -1,7 +1,7 @@
-import { JwtPayload } from './jwt-payload.type';
+import { CurrentUser } from './current-user.type';
 
 declare module 'fastify' {
     export interface FastifyRequest {
-        user: JwtPayload & { refresh_token?: string };
+        user: CurrentUser;
     }
 }

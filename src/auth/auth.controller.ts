@@ -13,13 +13,16 @@ import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { Tokens } from 'src/utils/types/tokens.type';
 import { SigninDto } from './dto/signin.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest } from 'fastify';
+import { RefreshTokenGuard } from './common/guards/refresh-token.guard';
+import { CurrentUser } from './common/decorators/current-user.decorator';
+import { Public } from './common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
+    @Public()
     @Post('local/signup')
     async signupLocal(@Body() signupDto: SignupDto): Promise<Tokens | null> {
         const tokens = await this.authService.signupLocal(signupDto);
@@ -29,6 +32,7 @@ export class AuthController {
         return tokens;
     }
 
+    @Public()
     @Post('local/signin')
     @HttpCode(HttpStatus.OK)
     async signinLocal(@Body() signinDto: SigninDto): Promise<Tokens | null> {
@@ -39,15 +43,14 @@ export class AuthController {
         return tokens;
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Post('logout')
     @HttpCode(HttpStatus.OK)
-    async logout(@Req() req: FastifyRequest) {
-        const user = req.user;
-        return await this.authService.logout(user.sub);
+    async logout(@CurrentUser('sub') userId: number) {
+        return await this.authService.logout(userId);
     }
 
-    @UseGuards(AuthGuard('jwt-refresh'))
+    @Public()
+    @UseGuards(RefreshTokenGuard)
     @Post('refresh')
     @HttpCode(HttpStatus.OK)
     async refresh(@Req() req: FastifyRequest) {
