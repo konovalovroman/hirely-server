@@ -6,12 +6,22 @@ import {
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter(),
     );
+
+    const swaggerConfig = new DocumentBuilder()
+        .setTitle('Hirely API')
+        .setDescription('Hirely API description')
+        .setVersion('1.0')
+        .addBearerAuth()
+        .build();
+    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('swagger', app, swaggerDocument);
 
     app.useGlobalPipes(new ValidationPipe());
 
