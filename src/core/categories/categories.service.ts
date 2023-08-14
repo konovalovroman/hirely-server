@@ -8,9 +8,9 @@ export class CategoriesService {
     constructor(private readonly categoriesRepository: CategoriesRepository) {}
 
     async create(
-        createcategoryDto: CreateCategoryDto,
+        createCategoryDto: CreateCategoryDto,
     ): Promise<Category | null> {
-        const { name } = createcategoryDto;
+        const { name } = createCategoryDto;
         const existingCategory =
             await this.categoriesRepository.findOneCategory({
                 where: { name },
