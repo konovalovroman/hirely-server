@@ -8,5 +8,6 @@ import { TagsRepository } from './repository/tags.repository';
     imports: [DatabaseModule],
     controllers: [TagsController],
     providers: [TagsService, TagsRepository],
+    exports: [TagsService],
 })
 export class TagsModule {}

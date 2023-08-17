@@ -29,6 +29,17 @@ export class TagsService {
         return tag;
     }
 
+    async findManyByNames(name: string[]): Promise<Tag[]> {
+        const tags = await this.tagsRepository.findTags({
+            where: {
+                name: {
+                    in: name,
+                },
+            },
+        });
+        return tags;
+    }
+
     async remove(id: number): Promise<Tag | null> {
         const tag = await this.tagsRepository.deleteTag({ where: { id } });
         return tag;

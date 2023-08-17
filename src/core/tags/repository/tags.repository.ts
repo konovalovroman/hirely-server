@@ -18,6 +18,7 @@ export class TagsRepository {
     async findTags(params?: {
         skip?: number;
         take?: number;
+        select?: Prisma.TagSelect;
         cursor?: Prisma.TagWhereUniqueInput;
         where?: Prisma.TagWhereInput;
         orderBy?: Prisma.TagOrderByWithRelationInput;
