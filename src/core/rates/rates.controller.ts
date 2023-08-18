@@ -44,10 +44,11 @@ export class RatesController {
         @Param('companyId') companyId: string,
         @CurrentUser('sub') userId: number,
     ) {
+        // TODO: put companyId field in createRateDto
         const rate = await this.ratesService.create(
             createRateDto,
             +companyId,
-            +userId,
+            userId,
         );
         if (!rate) {
             throw new BadRequestException('Rate creation error.');

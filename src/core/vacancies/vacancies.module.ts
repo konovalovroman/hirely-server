@@ -10,5 +10,6 @@ import { TagsModule } from '../tags/tags.module';
     imports: [DatabaseModule, UsersModule, TagsModule],
     controllers: [VacanciesController],
     providers: [VacanciesService, VacanciesRepository],
+    exports: [VacanciesService],
 })
 export class VacanciesModule {}

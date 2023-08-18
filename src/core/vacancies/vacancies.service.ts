@@ -169,9 +169,6 @@ export class VacanciesService {
             description,
             salary,
             experience,
-            location: {
-                connect: { id: location_id },
-            },
         };
 
         if (category_id) {
