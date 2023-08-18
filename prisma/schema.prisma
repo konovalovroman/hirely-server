@@ -37,7 +37,7 @@ model User {
   created_at         DateTime @default(now())
   updated_at         DateTime @updatedAt
 
-  company   Company?   @relation(fields: [company_id], references: [id])
+  company   Company?   @relation(fields: [company_id], references: [id], onDelete: SetNull)
   rates     Rate[]
   vacancies Vacancy[]
   feedbacks Feedback[]
@@ -48,14 +48,14 @@ model User {
 
 model Rate {
   id         Int      @id @default(autoincrement())
-  user_id    Int
+  user_id    Int?
   company_id Int
   rate       Int      @db.SmallInt
   message    String
   created_at DateTime @default(now())
 
-  user    User    @relation(fields: [user_id], references: [id])
-  company Company @relation(fields: [company_id], references: [id])
+  user    User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map(name: "rates")
 }
@@ -67,7 +67,7 @@ model Cv {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user User @relation(fields: [user_id], references: [id])
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map(name: "cvs")
 }
@@ -106,8 +106,8 @@ model Vacancy {
 
   category  Category           @relation(fields: [category_id], references: [id])
   location  Location           @relation(fields: [location_id], references: [id])
-  company   Company            @relation(fields: [company_id], references: [id])
-  author    User               @relation(fields: [author_id], references: [id])
+  company   Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  author    User               @relation(fields: [author_id], references: [id], onDelete: Cascade)
   feedbacks Feedback[]
   tags      TagsAndVacancies[]
 
@@ -121,8 +121,8 @@ model Feedback {
   message    String
   created_at DateTime @default(now())
 
-  user    User    @relation(fields: [user_id], references: [id])
-  vacancy Vacancy @relation(fields: [vacancy_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  vacancy Vacancy @relation(fields: [vacancy_id], references: [id], onDelete: Cascade)
 
   @@map(name: "feedbacks")
 }
@@ -143,8 +143,8 @@ model TagsAndVacancies {
   vacancy_id Int
   created_at DateTime @default(now())
 
-  tag     Tag     @relation(fields: [tag_id], references: [id])
-  vacancy Vacancy @relation(fields: [vacancy_id], references: [id])
+  tag     Tag     @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+  vacancy Vacancy @relation(fields: [vacancy_id], references: [id], onDelete: Cascade)
 
   @@map(name: "tags_and_vacancies")
 }
