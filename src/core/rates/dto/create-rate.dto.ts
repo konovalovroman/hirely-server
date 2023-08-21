@@ -16,4 +16,9 @@ export class CreateRateDto {
     @IsNotEmpty()
     @ApiProperty({ example: 'Nice company' })
     message: string;
+
+    @IsInt()
+    @Min(0)
+    @ApiProperty({ example: 1 })
+    company_id: number;
 }

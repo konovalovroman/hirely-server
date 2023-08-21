@@ -15,17 +15,21 @@ export class RatesService {
 
     async create(
         createRateDto: CreateRateDto,
-        companyId: number,
         userId: number,
     ): Promise<Rate | null> {
-        const { rate, message } = createRateDto;
+        const { rate, message, company_id } = createRateDto;
         const existingRate = await this.ratesRepository.findRates({
             where: {
                 user_id: userId,
-                company_id: companyId,
+                company_id,
             },
         });
         if (existingRate.length) {
+            return null;
+        }
+
+        const existingCompany = await this.companiesService.findOne(company_id);
+        if (!existingCompany) {
             return null;
         }
 
@@ -37,11 +41,21 @@ export class RatesService {
                     connect: { id: userId },
                 },
                 company: {
-                    connect: { id: companyId },
+                    connect: { id: company_id },
                 },
             },
             include: {
-                user: true,
+                user: {
+                    select: {
+                        id: true,
+                        first_name: true,
+                        last_name: true,
+                        email: true,
+                        role: true,
+                        created_at: true,
+                        updated_at: true,
+                    },
+                },
                 company: true,
             },
         });
@@ -51,7 +65,17 @@ export class RatesService {
     async findAll(): Promise<Rate[]> {
         const rates = await this.ratesRepository.findRates({
             include: {
-                user: true,
+                user: {
+                    select: {
+                        id: true,
+                        first_name: true,
+                        last_name: true,
+                        email: true,
+                        role: true,
+                        created_at: true,
+                        updated_at: true,
+                    },
+                },
                 company: true,
             },
         });
@@ -62,7 +86,17 @@ export class RatesService {
         const rate = await this.ratesRepository.findOneRate({
             where: { id },
             include: {
-                user: true,
+                user: {
+                    select: {
+                        id: true,
+                        first_name: true,
+                        last_name: true,
+                        email: true,
+                        role: true,
+                        created_at: true,
+                        updated_at: true,
+                    },
+                },
                 company: true,
             },
         });
@@ -79,7 +113,17 @@ export class RatesService {
                 company_id: companyId,
             },
             include: {
-                user: true,
+                user: {
+                    select: {
+                        id: true,
+                        first_name: true,
+                        last_name: true,
+                        email: true,
+                        role: true,
+                        created_at: true,
+                        updated_at: true,
+                    },
+                },
             },
         });
         return rates;
@@ -105,7 +149,17 @@ export class RatesService {
         const rate = await this.ratesRepository.deleteRate({
             where: { id },
             include: {
-                user: true,
+                user: {
+                    select: {
+                        id: true,
+                        first_name: true,
+                        last_name: true,
+                        email: true,
+                        role: true,
+                        created_at: true,
+                        updated_at: true,
+                    },
+                },
                 company: true,
             },
         });

@@ -38,18 +38,12 @@ export class RatesController {
         description: 'Returns if the user is not logged in.',
     })
     @ApiHeader({ name: 'Authorization', description: 'Jwt access token' })
-    @Post(':companyId')
+    @Post()
     async create(
         @Body() createRateDto: CreateRateDto,
-        @Param('companyId') companyId: string,
         @CurrentUser('sub') userId: number,
     ) {
-        // TODO: put companyId field in createRateDto
-        const rate = await this.ratesService.create(
-            createRateDto,
-            +companyId,
-            userId,
-        );
+        const rate = await this.ratesService.create(createRateDto, userId);
         if (!rate) {
             throw new BadRequestException('Rate creation error.');
         }
