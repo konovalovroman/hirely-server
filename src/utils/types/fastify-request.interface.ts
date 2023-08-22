@@ -1,7 +1,7 @@
 import { CurrentUser } from './current-user.type';
 
-declare module 'fastify' {
-    export interface FastifyRequest {
+declare module 'express' {
+    export interface Request {
         user: CurrentUser;
     }
 }

@@ -13,7 +13,6 @@ import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { Tokens } from 'src/utils/types/tokens.type';
 import { SigninDto } from './dto/signin.dto';
-import { FastifyRequest } from 'fastify';
 import { RefreshTokenGuard } from './common/guards/refresh-token.guard';
 import { CurrentUser } from './common/decorators/current-user.decorator';
 import { Public } from './common/decorators/public.decorator';
@@ -23,6 +22,7 @@ import {
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -94,7 +94,7 @@ export class AuthController {
     @UseGuards(RefreshTokenGuard)
     @Post('refresh')
     @HttpCode(HttpStatus.OK)
-    async refresh(@Req() req: FastifyRequest): Promise<Tokens | null> {
+    async refresh(@Req() req: Request): Promise<Tokens | null> {
         const user = req.user;
         const tokens = await this.authService.refreshTokens(
             user.sub,

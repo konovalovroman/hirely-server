@@ -1,19 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import {
-    NestFastifyApplication,
-    FastifyAdapter,
-} from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-    const app = await NestFactory.create<NestFastifyApplication>(
-        AppModule,
-        new FastifyAdapter(),
-    );
-
+    const app = await NestFactory.create(AppModule);
+    
     const swaggerConfig = new DocumentBuilder()
         .setTitle('Hirely API')
         .setDescription('Hirely API description')
