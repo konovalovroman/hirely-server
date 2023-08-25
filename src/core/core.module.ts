@@ -7,6 +7,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { LocationsModule } from './locations/locations.module';
 import { VacanciesModule } from './vacancies/vacancies.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { CvsModule } from './cvs/cvs.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
         LocationsModule,
         VacanciesModule,
         FeedbacksModule,
+        CvsModule,
     ],
 })
 export class CoreModule {}

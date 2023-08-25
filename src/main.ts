@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
-    
+
     const swaggerConfig = new DocumentBuilder()
         .setTitle('Hirely API')
         .setDescription('Hirely API description')
