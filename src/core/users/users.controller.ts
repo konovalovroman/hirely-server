@@ -88,6 +88,15 @@ export class UsersController {
         return user;
     }
 
+    @Get('/owner/:companyId')
+    async getCompanyOwner(@Param('companyId') companyId: string) {
+        const user = await this.usersService.getCompanyOwner(+companyId);
+        if (!user) {
+            throw new NotFoundException('User not found.');
+        }
+        return user;
+    }
+
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'User has been successfully updated if it exists.',

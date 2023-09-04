@@ -1,5 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -26,16 +24,17 @@ model Company {
 }
 
 model User {
-  id                 Int      @id @default(autoincrement())
-  first_name         String   @db.VarChar(30)
-  last_name          String   @db.VarChar(30)
-  email              String   @unique @db.VarChar(255)
-  password           String   @db.VarChar(255)
-  role               UserRole
-  rt_hash            String?   @db.VarChar(255)
-  company_id         Int?
-  created_at         DateTime @default(now())
-  updated_at         DateTime @updatedAt
+  id               Int      @id @default(autoincrement())
+  first_name       String   @db.VarChar(30)
+  last_name        String   @db.VarChar(30)
+  email            String   @unique @db.VarChar(255)
+  password         String   @db.VarChar(255)
+  role             UserRole
+  is_company_owner Boolean  @default(false)
+  rt_hash          String?  @db.VarChar(255)
+  company_id       Int?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
 
   company   Company?   @relation(fields: [company_id], references: [id], onDelete: SetNull)
   rates     Rate[]
@@ -43,6 +42,7 @@ model User {
   feedbacks Feedback[]
   cv        Cv?
 
+  @@unique([company_id, is_company_owner], name: "UniqueCompanyOwner")
   @@map(name: "users")
 }
 
@@ -54,7 +54,7 @@ model Rate {
   message    String
   created_at DateTime @default(now())
 
-  user    User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull)
   company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map(name: "rates")

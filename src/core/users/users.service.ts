@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repository/users.repository';
 import { genSalt, compare, hash } from 'bcrypt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +20,7 @@ export class UsersService {
         return isEqual;
     }
 
-    async create(createUserDto: CreateUserDto) {
+    async create(createUserDto: CreateUserDto): Promise<User | null> {
         const { first_name, last_name, email, password, role } = createUserDto;
         const existingUsers = await this.usersRepository.findUsers({
             where: {
@@ -41,28 +42,27 @@ export class UsersService {
                 role,
             },
         });
-
         return user;
     }
 
-    async findAll() {
+    async findAll(): Promise<User[]> {
         const users = await this.usersRepository.findUsers();
         return users;
     }
 
-    async findOne(id: number) {
+    async findOne(id: number): Promise<User | null> {
         const user = await this.usersRepository.findOneUser({ where: { id } });
         return user;
     }
 
-    async findOneByEmail(email: string) {
+    async findOneByEmail(email: string): Promise<User | null> {
         const user = await this.usersRepository.findOneUser({
             where: { email },
         });
         return user;
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto) {
+    async update(id: number, updateUserDto: UpdateUserDto): Promise<User | null> {
         const { first_name, last_name, password, role, rt_hash } =
             updateUserDto;
         const user = await this.usersRepository.updateUser({
@@ -80,11 +80,25 @@ export class UsersService {
         return user;
     }
 
-    async remove(id: number) {
+    async remove(id: number): Promise<User | null>  {
         const user = await this.usersRepository.deleteUser({
             where: {
                 id,
             },
+        });
+        return user;
+    }
+
+    async getCompanyOwner(companyId: number): Promise<User | null> {
+        const [user] = await this.usersRepository.findUsers({
+            where: {
+                role: 'company_owner',
+                is_company_owner: true,
+                company_id: companyId,
+            },
+            include: {
+                company: true,
+            }
         });
         return user;
     }
