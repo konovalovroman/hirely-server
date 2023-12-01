@@ -1,0 +1,158 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(30)
+  description String
+  website     String?  @db.VarChar(255)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  users     User[]
+  rates     Rate[]
+  vacancies Vacancy[]
+
+  @@map(name: "companies")
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  first_name       String   @db.VarChar(30)
+  last_name        String   @db.VarChar(30)
+  email            String   @unique @db.VarChar(255)
+  password         String   @db.VarChar(255)
+  role             UserRole
+  is_company_owner Boolean  @default(false)
+  rt_hash          String?  @db.VarChar(255)
+  company_id       Int?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  company   Company?   @relation(fields: [company_id], references: [id], onDelete: SetNull)
+  rates     Rate[]
+  vacancies Vacancy[]
+  feedbacks Feedback[]
+  cv        Cv?
+
+  @@unique([company_id, is_company_owner], name: "UniqueCompanyOwner")
+  @@map(name: "users")
+}
+
+model Rate {
+  id         Int      @id @default(autoincrement())
+  user_id    Int?
+  company_id Int
+  rate       Int      @db.SmallInt
+  message    String
+  created_at DateTime @default(now())
+
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+
+  @@map(name: "rates")
+}
+
+model Cv {
+  id         Int      @id @default(autoincrement())
+  file_path  String   @db.VarChar(255)
+  user_id    Int      @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map(name: "cvs")
+}
+
+model Category {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(40)
+  created_at DateTime @default(now())
+
+  vacancies Vacancy[]
+
+  @@map(name: "categories")
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  city String @unique @db.VarChar(30)
+
+  vacancies Vacancy[]
+
+  @@map(name: "locations")
+}
+
+model Vacancy {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  description String
+  salary      Int
+  experience  Int      @db.SmallInt
+  category_id Int
+  location_id Int
+  company_id  Int
+  author_id   Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  category  Category           @relation(fields: [category_id], references: [id])
+  location  Location           @relation(fields: [location_id], references: [id])
+  company   Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  author    User               @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  feedbacks Feedback[]
+  tags      TagsAndVacancies[]
+
+  @@map(name: "vacancies")
+}
+
+model Feedback {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  vacancy_id Int
+  message    String
+  created_at DateTime @default(now())
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  vacancy Vacancy @relation(fields: [vacancy_id], references: [id], onDelete: Cascade)
+
+  @@map(name: "feedbacks")
+}
+
+model Tag {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(30)
+  created_at DateTime @default(now())
+
+  vacancies TagsAndVacancies[]
+
+  @@map(name: "tags")
+}
+
+model TagsAndVacancies {
+  id         Int      @id @default(autoincrement())
+  tag_id     Int
+  vacancy_id Int
+  created_at DateTime @default(now())
+
+  tag     Tag     @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+  vacancy Vacancy @relation(fields: [vacancy_id], references: [id], onDelete: Cascade)
+
+  @@map(name: "tags_and_vacancies")
+}
+
+enum UserRole {
+  employee
+  recruiter
+  company_owner
+  moderator
+  admin
+}
